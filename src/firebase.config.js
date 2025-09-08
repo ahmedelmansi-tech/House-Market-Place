@@ -1,27 +1,6 @@
-// // Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app";
-// import { getFirestore } from "firebase/firestore";
-// // TODO: Add SDKs for Firebase products that you want to use
-// // https://firebase.google.com/docs/web/setup#available-libraries
-
-// // Your web app's Firebase configuration
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDAk3oanrnHLwG-UZy0nGKy9goKKDArehA",
-//   authDomain: "house-market-app-b78da.firebaseapp.com",
-//   projectId: "house-market-app-b78da",
-//   storageBucket: "house-market-app-b78da.firebasestorage.app",
-//   messagingSenderId: "215512487331",
-//   appId: "1:215512487331:web:f55d303bc77b19820d7616"
-// // };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// export const db = getFirestore()
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -36,3 +15,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore();
