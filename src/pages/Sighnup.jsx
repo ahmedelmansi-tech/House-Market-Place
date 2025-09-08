@@ -9,9 +9,11 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-
+// Storing Data into the DB
 import { db } from "../firebase.config";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 
+// ///////////////////////// -Start of the Component-/////////////////////////////////////////
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [formData, setFormData] = useState({
@@ -23,7 +25,7 @@ const Signup = () => {
   const { name, email, password } = formData;
 
   const navigate = useNavigate();
-
+  // ------------------------------- Typing Inputs ----------------------------------------------
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -31,13 +33,14 @@ const Signup = () => {
     }));
   };
 
+  // ---------------------------------- Submit ---------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const auth = getAuth();
 
-      const userCredential = createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
@@ -51,8 +54,14 @@ const Signup = () => {
         });
       }
       navigate("/");
+
+      // Get Copy From Form Data
+      const copyOfFormData = { ...formData };
+      // delete copyOfFormData.password
+      copyOfFormData.timestamp = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), copyOfFormData);
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
