@@ -46,20 +46,19 @@ const Signup = () => {
         password
       );
 
-      const user = userCredential.user;
+      const userInfo = userCredential.user;
 
-      if (auth.currentUser) {
-        updateProfile(auth.currentUser, {
-          displayName: name,
-        });
-      }
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+
+      // Adding to the DB
+      const clonedFormData = { ...formData };
+      // delete clonedFormData.password
+      clonedFormData.timestamp = serverTimestamp();
+      await setDoc(doc(db, "users", userInfo.uid), clonedFormData);
+
       navigate("/");
-
-      // Get Copy From Form Data
-      const copyOfFormData = { ...formData };
-      // delete copyOfFormData.password
-      copyOfFormData.timestamp = serverTimestamp();
-      await setDoc(doc(db, "users", user.uid), copyOfFormData);
     } catch (error) {
       console.log(error);
     }

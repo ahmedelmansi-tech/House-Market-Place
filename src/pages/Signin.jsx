@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as RightArrow } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
 
+//------------------  Sign In ----------------------------------------
+
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [formData, setFormData] = useState({
@@ -20,7 +23,28 @@ const Signin = () => {
       [e.target.id]: e.target.value,
     }));
   };
+  //---------------- Submit --------------------------
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const currnetUser = userCredential.user;
+
+      if (currnetUser) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className="pageContainer">
@@ -29,7 +53,7 @@ const Signin = () => {
         </header>
 
         <main>
-          <form>
+          <form onSubmit={handleSubmit}>
             <input
               type="email"
               className="emailInput"
