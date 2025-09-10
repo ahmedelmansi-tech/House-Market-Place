@@ -9,6 +9,8 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Sighnup";
 import Nav from "./components/Nav";
 
+// Notifaction
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <>
@@ -23,6 +25,7 @@ function App() {
         </Routes>
         <Nav />
       </BrowserRouter>
+      <ToastContainer />
       {/* Will be The Navbar  */}
     </>
   );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as RightArrow } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
-
+import { toast } from "react-toastify";
 //------------------  Sign In ----------------------------------------
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -23,6 +23,7 @@ const Signin = () => {
       [e.target.id]: e.target.value,
     }));
   };
+
   //---------------- Submit --------------------------
 
   const handleSubmit = async (e) => {
@@ -39,10 +40,15 @@ const Signin = () => {
       const currnetUser = userCredential.user;
 
       if (currnetUser) {
-        navigate("/");
+        navigate("/profile");
+        toast.success(currnetUser.displayName, {
+          position: "bottom-center",
+          autoClose: 1000,
+        });
       }
     } catch (error) {
       console.log(error);
+      toast.error("user or password incorrect");
     }
   };
   return (

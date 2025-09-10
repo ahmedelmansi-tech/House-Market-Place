@@ -40,25 +40,25 @@ const Signup = () => {
     try {
       const auth = getAuth();
 
-      const userCredential = await createUserWithEmailAndPassword(
+      const userCrediential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-
-      const userInfo = userCredential.user;
+      const user = userCrediential.user;
 
       updateProfile(auth.currentUser, {
         displayName: name,
       });
 
-      // Adding to the DB
-      const clonedFormData = { ...formData };
-      // delete clonedFormData.password
-      clonedFormData.timestamp = serverTimestamp();
-      await setDoc(doc(db, "users", userInfo.uid), clonedFormData);
+      // Store DB
 
-      navigate("/");
+      const clonedData = { ...formData };
+      clonedData.timestamp = serverTimestamp();
+      await setDoc(doc(db, "users", user.uid), {
+        clonedData,
+      });
+      navigate("/profile");
     } catch (error) {
       console.log(error);
     }
