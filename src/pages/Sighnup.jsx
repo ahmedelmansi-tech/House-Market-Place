@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as RightArrow } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
-
 // Authentication Stuff
 import {
   getAuth,
@@ -12,7 +11,9 @@ import {
 // Storing Data into the DB
 import { db } from "../firebase.config";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
+// Notifcation
 
+import { toast } from "react-toastify";
 // ///////////////////////// -Start of the Component-/////////////////////////////////////////
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(true);
@@ -47,7 +48,7 @@ const Signup = () => {
       );
       const user = userCrediential.user;
 
-      updateProfile(auth.currentUser, {
+      await updateProfile(auth.currentUser, {
         displayName: name,
       });
 
@@ -55,12 +56,20 @@ const Signup = () => {
 
       const clonedData = { ...formData };
       clonedData.timestamp = serverTimestamp();
-      await setDoc(doc(db, "users", user.uid), {
-        clonedData,
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          clonedData,
+        },
+        { merge: true }
+      );
+      toast.success(`Welcome ${user.displayName}`, {
+        autoClose: 1500,
+        hideProgressBar: true,
       });
       navigate("/profile");
     } catch (error) {
-      console.log(error);
+      toast.warning("something went wrong");
     }
   };
 
@@ -83,7 +92,7 @@ const Signup = () => {
             />
 
             <input
-              type="email"
+              type="text"
               className="emailInput"
               placeholder="Email"
               id="email"

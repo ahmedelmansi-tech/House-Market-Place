@@ -41,9 +41,10 @@ const Signin = () => {
 
       if (currnetUser) {
         navigate("/profile");
-        toast.success(currnetUser.displayName, {
+        toast.success(`Welcome ${currnetUser.displayName} `, {
           position: "bottom-center",
           autoClose: 1000,
+          hideProgressBar: true,
         });
       }
     } catch (error) {
