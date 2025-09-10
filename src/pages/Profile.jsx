@@ -49,7 +49,7 @@ const Profile = () => {
       // Firestore
       const userRef = doc(db, "users", auth.currentUser.uid);
       await updateDoc(userRef, {
-        "clonedData.name": name,
+        name,
       });
 
       toast.success("updated successfuly");

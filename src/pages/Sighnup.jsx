@@ -56,13 +56,7 @@ const Signup = () => {
 
       const clonedData = { ...formData };
       clonedData.timestamp = serverTimestamp();
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          clonedData,
-        },
-        { merge: true }
-      );
+      await setDoc(doc(db, "users", user.uid), clonedData);
       toast.success(`Welcome ${user.displayName}`, {
         autoClose: 1500,
         hideProgressBar: true,
