@@ -11,6 +11,10 @@ import Nav from "./components/Nav";
 
 // Notifaction
 import { ToastContainer } from "react-toastify";
+
+//Private Route to check if is logged
+import PrivateRoute from "./components/PrivateRoute";
+
 function App() {
   return (
     <>
@@ -18,7 +22,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Explore />} />
           <Route path="/offers" element={<Offers />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<PrivateRoute />}>
+            <Route index element={<Profile />} />
+          </Route>
           <Route path="/sign-in" element={<Signin />} />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -26,7 +32,6 @@ function App() {
         <Nav />
       </BrowserRouter>
       <ToastContainer />
-      {/* Will be The Navbar  */}
     </>
   );
 }
