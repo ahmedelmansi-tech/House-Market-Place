@@ -1,9 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import useAuthStatus from "../hooks/useAuthStatus";
+import Spinner from "./Spinner";
+
 const PrivateRoute = () => {
-  const auth = getAuth();
-  let logged = auth.currentUser;
-  return logged ? <Outlet /> : <Navigate to="/sign-in" />;
+  const { loggedIn, checkingStatues } = useAuthStatus();
+
+  if (checkingStatues) {
+    return <Spinner />;
+  }
+
+  return loggedIn ? <Outlet /> : <Navigate to="/sign-in" />;
 };
 
 export default PrivateRoute;

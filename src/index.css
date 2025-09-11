@@ -824,3 +824,16 @@ sub{
   font-size: 0.8rem;
   opacity: 0.75;
 }
+/* Loading */
+.loading{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+.loading img{
+  height: 70px;
+}

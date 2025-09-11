@@ -37,6 +37,8 @@ const Profile = () => {
   };
 
   const onSubmit = async () => {
+    const auth = getAuth();
+
     try {
       // Checks if the user name is updated
       if (auth.currentUser.displayName !== name) {
