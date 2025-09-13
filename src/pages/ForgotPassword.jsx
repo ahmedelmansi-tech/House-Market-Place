@@ -20,6 +20,7 @@ const ForgotPassword = () => {
         autoClose: 2000,
         hideProgressBar: true,
       });
+      console.log(auth);
     } catch (error) {
       toast.error("Somthing Went Wrong");
     }

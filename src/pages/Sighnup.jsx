@@ -14,6 +14,7 @@ import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 // Notifcation
 
 import { toast } from "react-toastify";
+import OAuth from "../components/OAuth";
 // ///////////////////////// -Start of the Component-/////////////////////////////////////////
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(true);
@@ -46,6 +47,8 @@ const Signup = () => {
         email,
         password
       );
+      console.log(userCrediential);
+
       const user = userCrediential.user;
 
       await updateProfile(auth.currentUser, {
@@ -53,8 +56,8 @@ const Signup = () => {
       });
 
       // Store DB
-
       const clonedData = { ...formData };
+      delete clonedData.password;
       clonedData.timestamp = serverTimestamp();
       await setDoc(doc(db, "users", user.uid), clonedData);
       toast.success(`Welcome ${user.displayName}`, {
@@ -127,7 +130,7 @@ const Signup = () => {
           </form>
         </main>
 
-        {/* Google OAuth */}
+        <OAuth />
         <Link to="/sign-in" className="registerLink">
           Sign in instead
         </Link>

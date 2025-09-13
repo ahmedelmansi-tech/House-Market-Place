@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { ReactComponent as RightArrow } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
 import { toast } from "react-toastify";
+
+import OAuth from "../components/OAuth";
+
 //------------------  Sign In ----------------------------------------
 
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -56,7 +59,7 @@ const Signin = () => {
     <>
       <div className="pageContainer">
         <header>
-          <p className="pageHeader">Welcom Back!</p>
+          <p className="pageHeader">Welcome Back!</p>
         </header>
 
         <main>
@@ -102,10 +105,9 @@ const Signin = () => {
             </div>
           </form>
         </main>
-
-        {/* Google OAuth */}
+        <OAuth />
         <Link to="/sign-up" className="registerLink">
-          Sign Up instead{" "}
+          Sign Up instead
         </Link>
       </div>
     </>
