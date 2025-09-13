@@ -14,7 +14,6 @@ const Profile = () => {
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
-
   // Desturcting data
   const { name, email } = profileData;
 
@@ -37,27 +36,25 @@ const Profile = () => {
   };
 
   const onSubmit = async () => {
-    const auth = getAuth();
-
     try {
-      // Checks if the user name is updated
-      if (auth.currentUser.displayName !== name) {
-        //Updating in the DB
-        await updateProfile(auth.currentUser, {
+      const auth = getAuth();
+      const member = auth.currentUser;
+
+      // User UI Profile
+      if (member.displayName !== name) {
+        await updateProfile(member, {
           displayName: name,
         });
+
+        // FireStore
+        const refOfUpdatedData = doc(db, "users", member.uid);
+
+        await updateDoc(refOfUpdatedData, {
+          name,
+        });
       }
-
-      // Firestore
-      const userRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(userRef, {
-        name,
-      });
-
-      toast.success("updated successfuly");
     } catch (error) {
-      console.log(error);
-      toast.error("somthing went wrong");
+      toast.error("Something went wrong !");
     }
   };
 

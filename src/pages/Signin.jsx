@@ -41,7 +41,6 @@ const Signin = () => {
       );
 
       const currnetUser = userCredential.user;
-
       if (currnetUser) {
         navigate("/profile");
         toast.success(`Welcome ${currnetUser.displayName} `, {

@@ -38,7 +38,6 @@ const Signup = () => {
   // ---------------------------------- Submit ---------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const auth = getAuth();
 
@@ -59,6 +58,7 @@ const Signup = () => {
       const clonedData = { ...formData };
       delete clonedData.password;
       clonedData.timestamp = serverTimestamp();
+
       await setDoc(doc(db, "users", user.uid), clonedData);
       toast.success(`Welcome ${user.displayName}`, {
         autoClose: 1500,
