@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Explore from "./pages/Explore";
 import ForgotPassword from "./pages/ForgotPassword";
 import Offers from "./pages/Offers";
+import Category from "./pages/Category";
 import Profile from "./pages/Profile";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Sighnup";
@@ -21,7 +22,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Explore />} />
-          <Route path="/offers" element={<Offers />} />
+          <Route path="/offers" element={<PrivateRoute />}>
+            <Route path="/offers" element={<Offers />} />
+          </Route>
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/profile" element={<PrivateRoute />}>
             <Route index element={<Profile />} />
           </Route>
