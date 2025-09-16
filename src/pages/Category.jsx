@@ -37,7 +37,6 @@ const Category = () => {
         );
 
         // documentSnapshot
-
         const documentSnapshot = await getDocs(q);
 
         const listings = [];
@@ -63,7 +62,7 @@ const Category = () => {
     <div className="category">
       <header>
         <p className="pageHeader">
-          places for {param.categoryName === "rent" ? "Rent" : "Sale"}
+          Places For {param.categoryName === "rent" ? "Rent" : "Sale"}
         </p>
       </header>
       {loading ? (
@@ -85,7 +84,7 @@ const Category = () => {
           </main>
         </>
       ) : (
-        <p>No Places For {param.categoryName}</p>
+        <p>No Places For {param.categoryName} </p>
       )}
     </div>
   );
