@@ -13,6 +13,10 @@ import { db } from "../firebase.config";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 
+//----Importimg Listing Component
+
+import Listing from "../components/Listing";
+
 const Category = () => {
   const param = useParams();
 
@@ -23,30 +27,32 @@ const Category = () => {
     // Fetching Data From DATABASE
     const fetchListings = async () => {
       try {
-        // Ref for the mentioned Collection
         const collectionRef = collection(db, "listings");
-        // Make the Query
+        // Query
         const q = query(
           collectionRef,
           where("type", "==", param.categoryName),
           orderBy("timestamp", "desc"),
           limit(5)
         );
-        // documentSnapshot >>. id .exists() .data()
+
+        // documentSnapshot
+
         const documentSnapshot = await getDocs(q);
 
         const listings = [];
 
-        documentSnapshot.forEach((doc) => {
+        documentSnapshot.forEach((singleDoc) => {
           return listings.push({
-            id: doc.id,
-            data: doc.data(),
+            id: singleDoc.id,
+            data: singleDoc.data(),
           });
         });
+
         setListings(listings);
         setLoadig(false);
       } catch (error) {
-        toast.error("something went wrong");
+        toast.error("Error While Fetching");
       }
     };
 
@@ -67,7 +73,13 @@ const Category = () => {
           <main>
             <ul className="categoryListings">
               {listings.map((listing) => {
-                return <h3 key={listing.id}>{listing.data.name}</h3>;
+                return (
+                  <Listing
+                    listingData={listing.data}
+                    id={listing.id}
+                    key={listing.id}
+                  />
+                );
               })}
             </ul>
           </main>
