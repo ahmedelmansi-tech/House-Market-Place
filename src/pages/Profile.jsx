@@ -1,6 +1,11 @@
 import { getAuth, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+//-------ICONS--------------------//
+import arroeRight from "../assets/svg/keyboardArrowRightIcon.svg";
+import home from "../assets/svg/homeIcon.svg";
+
 //-----Updating Profile----------//
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase.config";
@@ -114,6 +119,12 @@ const Profile = () => {
               />
             </form>
           </div>
+
+          <Link to={"/create-listing"} className="createListing">
+            <img src={home} alt="home" />
+            <p>Sell / Rent your home</p>
+            <img src={arroeRight} alt="arrow" />
+          </Link>
         </main>
       </div>
     </>

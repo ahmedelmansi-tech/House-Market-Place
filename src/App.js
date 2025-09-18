@@ -9,11 +9,12 @@ import Profile from "./pages/Profile";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Sighnup";
 import Nav from "./components/Nav";
+import CreateListing from "./pages/CreateListing";
 
 // Notifaction
 import { ToastContainer } from "react-toastify";
 
-//Private Route to check if is logged
+//Private Route
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Explore />} />
+          <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/offers" element={<PrivateRoute />}>
             <Route path="/offers" element={<Offers />} />
           </Route>
