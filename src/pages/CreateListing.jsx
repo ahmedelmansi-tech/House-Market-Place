@@ -2,9 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Spinner from "../components/Spinner";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+// Storage
+
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { db } from "../firebase.config";
 
 const CreateListing = () => {
-  const [geolocationEnabled, setGeolocationEnabled] = useState(false);
+  // const [geolocationEnabled, setGeolocationEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
@@ -63,14 +74,116 @@ const CreateListing = () => {
   if (loading) {
     return <Spinner />;
   }
-  //------------  Functions
+  //------------Functions--------------------------//
 
-  const onSubmit = (e) => {
-    e.prevent.default();
+  //--------------------------SUBMIT------------------------------------------//
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (discountedPrice >= regularPrice) {
+      toast.error("you should modifiy the prices !");
+      setLoading(false);
+      return;
+    }
+
+    if (images.length > 6) {
+      toast.error("Only 6 images allowed");
+      setLoading(false);
+      return;
+    }
+
+    console.log(formData.images);
+
+    // Store image
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+        const storageRef = ref(storage, "images/" + fileName);
+        //sends Only one pic per time
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        // Upload
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    };
+
+    const upladedImages = await Promise.all(
+      [...images].map((singleImage) => {
+        storeImage(singleImage);
+      })
+    ).catch((error) => {
+      toast.error("Upload Fails");
+      return;
+    });
+
+    console.log(upladedImages);
+
+    toast.success("Your post is published");
+    navigate("/");
   };
 
+  //-----------------MUTATE-------------------------------------------//
   const onMutate = (e) => {
-    console.log("MUTATE FUNC");
+    let bol;
+
+    let val = e.target.value;
+
+    if (e.target.value === "true") {
+      bol = true;
+    }
+    if (e.target.value === "false") {
+      bol = false;
+    }
+
+    if (e.target.value === "number") {
+      val = Number(e.target.value);
+    }
+
+    if (e.target.files) {
+      val = e.target.files;
+    }
+
+    setFormData((prev) => {
+      return {
+        ...prev,
+        [e.target.id]: bol ?? val,
+      };
+    });
+
+    // console.log(e.target.value);
   };
   return (
     <div className="profile">
@@ -152,47 +265,21 @@ const CreateListing = () => {
 
           <label className="formLabel">Furnished</label>
           <div className="formButtons">
-            <buttom
-              id="parking"
-              type="button"
-              onClick={onMutate}
-              value={parking}
-              className={parking ? "formButtonActive" : "formButton"}
-            >
-              Yes
-            </buttom>
-
-            <buttom
-              id="parking"
-              type="button"
-              onClick={onMutate}
-              value={parking}
-              className={
-                !parking && parking !== null ? "formButtonActive" : "formButton"
-              }
-            >
-              No
-            </buttom>
-          </div>
-
-          {/* 5th parking Label */}
-          <label className="formLabel">Parking Spot</label>
-          <div className="formButtons">
-            <buttom
+            <button
               id="furnished"
               type="button"
               onClick={onMutate}
-              value={true}
+              value="true"
               className={furnished ? "formButtonActive" : "formButton"}
             >
               Yes
-            </buttom>
+            </button>
 
-            <buttom
+            <button
               id="furnished"
               type="button"
               onClick={onMutate}
-              value={false}
+              value="false"
               className={
                 !furnished && furnished !== null
                   ? "formButtonActive"
@@ -200,7 +287,33 @@ const CreateListing = () => {
               }
             >
               No
-            </buttom>
+            </button>
+          </div>
+
+          {/* 5th parking Label */}
+          <label className="formLabel">Parking Spot</label>
+          <div className="formButtons">
+            <button
+              id="parking"
+              type="button"
+              onClick={onMutate}
+              value={true}
+              className={parking ? "formButtonActive" : "formButton"}
+            >
+              Yes
+            </button>
+
+            <button
+              id="parking"
+              type="button"
+              onClick={onMutate}
+              value={false}
+              className={
+                !parking && parking !== null ? "formButtonActive" : "formButton"
+              }
+            >
+              No
+            </button>
           </div>
 
           {/* 6th Address Label */}
@@ -217,7 +330,7 @@ const CreateListing = () => {
 
           {/* 7th Long - Lat  */}
 
-          {geolocationEnabled && (
+          {/* {geolocationEnabled && (
             <div className="formLatLng flex">
               <div>
                 <label className="formLabel">Latitude</label>
@@ -242,13 +355,13 @@ const CreateListing = () => {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           {/* 7Th Offers  */}
 
           <label className="formLabel">Offers</label>
           <div className="formButtons">
-            <buttom
+            <button
               id="offer"
               type="button"
               onClick={onMutate}
@@ -256,9 +369,9 @@ const CreateListing = () => {
               className={offer ? "formButtonActive" : "formButton"}
             >
               Yes
-            </buttom>
+            </button>
 
-            <buttom
+            <button
               id="offer"
               type="button"
               onClick={onMutate}
@@ -268,7 +381,7 @@ const CreateListing = () => {
               }
             >
               No
-            </buttom>
+            </button>
           </div>
 
           {/* 8th Regulare Price */}
@@ -282,6 +395,7 @@ const CreateListing = () => {
               className="formInputSmall"
               min={50}
               max={1000000}
+              step={1}
               required
               onChange={onMutate}
             />
@@ -324,6 +438,13 @@ const CreateListing = () => {
           />
 
           {/* END OF THE FORM -------- */}
+          <button
+            className="primaryButton createListingButton
+          "
+            type="submit"
+          >
+            Create Listing
+          </button>
         </form>
       </main>
     </div>
